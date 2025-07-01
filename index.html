@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokedex</title>
+    <!-- normalize -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <!-- css -->
+    <link rel="stylesheet" href="/assets/css/global.css">
+</head>
+<body>
+    <section class="container">
+        <h1>Pokedex</h1>
+
+        <ol id = "pokemonList" class="pokemons">
+
+            <!-- pokemons here -->
+        </ol>
+
+        <div class="pagination">
+            <button id="loadMoreButton" type="button">
+                Load More...
+            </button>
+
+        </div>
+
+    </section>
+    <script src="/assets/js/pokemon-model.js"></script>
+    <script src="/assets/js/pokeAPI.js"></script>
+    <script src="/assets/js/engine.js"></script>
+</body>
+</html>
