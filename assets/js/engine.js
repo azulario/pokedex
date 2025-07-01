@@ -1,32 +1,54 @@
 
-function convertPokemonTypesToLi(pokemonTypes) {
-    return pokemonTypes.map((typeSlot) => `<li class="type">${type.name}</li>`)
+const pokemonList = document.getElementById('pokemonList')
+const loadMoreButton = document.getElementById('loadMoreButton')
+const limit = 10;
+let offset = 0;
+const maxRecords = 151;
+
+ 
+
+function loadPokemonItems(offset, limit) {
+    
+    pokeAPI.getPokemons(offset, limit).then((pokemons = []) => {
+        const newHtml = pokemons.map((pokemon) => {
+            const formattedNumber = pokemon.number.toString().padStart(3, '0');
+            return `
+        <li class="pokemon ${pokemon.type}">
+            <span class="number">#${formattedNumber}</span>
+            <span class="name">${pokemon.name}</span>
+    
+            <div class="details">   
+                <ol class="types">
+                    ${pokemon.types.map((type) => `<li class="type ${type}" >${type}</li>`).join('')}
+                </ol>
+    
+                <img src="${pokemon.photo}" 
+                     alt="${pokemon.name}">
+            </div>
+        </li>
+        `
+        }).join('')
+
+        pokemonList.innerHTML += newHtml
+
+    })
 }
 
-function convertPokemonToLi(pokemon) {
+loadPokemonItems(offset, limit)
 
-    const formattedNumber = pokemon.number.toString().padStart(3, '0');
-    
-    return `
-    <li class="pokemon ${pokemon.type}">
-        <span class="number">#${formattedNumber}</span>
-        <span class="name">${pokemon.name}</span>
+loadMoreButton.addEventListener('click', () => {
+    offset += limit;
 
-        <div class="details">   
-            <ol class="types">
-                ${pokemon.types.map((type) => `<li class="type ${type}" >${type}</li>`).join('')}
-            </ol>
+    const recordNextPage = offset + limit;
 
-            <img src="${pokemon.photo}" 
-                 alt="${pokemon.name}">
-        </div>
-    </li>
-    `
-}   
+    if (recordNextPage >= maxRecords) {
+        const newLimit = maxRecords - offset;
+        loadPokemonItems(offset, newLimit);
 
-const pokemonList = document.getElementById('pokemonList')
+        loadMoreButton.parentElement.removeChild(loadMoreButton);
 
-pokeAPI.getPokemons().then((pokemons) => {
-    pokemonList.innerHTML += pokemons.map(convertPokemonToLi).join('')
-    
-})
+    } else {
+        loadPokemonItems(offset, limit);
+    }
+
+});
