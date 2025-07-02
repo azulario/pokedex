@@ -12,7 +12,7 @@
 <body>
     <section class="container">
 
-        <img class="headerpokeball" src="/assets/images/pokeball.png" alt="">
+        <img class="headerpokeball" src="/assets/images/pokeball.png" alt="Pokebola de fundo">
         
         <h1>Pokedex</h1>
 
@@ -29,6 +29,77 @@
         </div>
 
     </section>
+
+    <!-- NOVA SEÇÃO: TELA DE DETALHES DO POKÉMON -->
+
+    <section id="pokemonDetailScreen" class="pokemon-detail-screen hidden">
+        <div class="headerPokeballImage"><img src="/assets/images/pokeball3.png" alt="pokeball"></div>
+        <div class="detail-header">
+            <!-- Botão para voltar à lista principal -->
+            <button class="back-button" type="button">←</button>
+            <!-- Nome do Pokémon na tela de detalhes -->
+            <h2 class="pokemon-detail-name"></h2>
+            <!-- Número do Pokémon na tela de detalhes -->
+            <span class="pokemon-detail-number"></span>
+            <!-- Espaço para um ícone de favorito, se for implementado futuramente -->
+            <!-- <button class="favorite-button" type="button">❤️</button> -->
+        </div>
+
+        <div class="detail-main">
+            <!-- Imagem principal do Pokémon na tela de detalhes -->
+            <img class="pokemon-detail-image" src="" alt="Imagem do Pokémon">
+
+            <div class="detail-tabs">
+                <!-- Botões para navegar entre as abas de detalhes -->
+                <div class="tab-buttons">
+                    <button class="tab-button active" data-tab="about">About</button>
+                    <button class="tab-button" data-tab="base-stats">Base Stats</button>
+                    <button class="tab-button" data-tab="evolution">Evolution</button>
+                    <button class="tab-button" data-tab="moves">Moves</button>
+                </div>
+
+                <!-- Conteúdo das abas -->
+                <div class="tab-content">
+                    <!-- Aba "About" (Sobre) -->
+                    <div id="about-tab" class="tab-pane active">
+                        <ul class="about-list">
+                            <li>Species: <span id="detail-species"></span></li>
+                            <li>Height: <span id="detail-height"></span></li>
+                            <li>Weight: <span id="detail-weight"></span></li>
+                            <li>Abilities: <span id="detail-abilities"></span></li>
+                            <li class="breeding-section">Breeding</li>
+                            <li>Gender: <span id="detail-gender"></span></li>
+                            <li>Egg Groups: <span id="detail-egg-groups"></span></li>
+                            <li>Egg Cycle: <span id="detail-egg-cycle"></span></li>
+                        </ul>
+                    </div>
+                    <!-- Aba "Base Stats" (Estatísticas Base) -->
+                    <div id="base-stats-tab" class="tab-pane">
+                        <ul class="stats-list">
+                            <li>HP: <span class="stat-value" id="stat-hp"></span><div class="stat-bar-bg"><div class="stat-bar" id="bar-hp"></div></div></li>
+                            <li>Attack: <span class="stat-value" id="stat-attack"></span><div class="stat-bar-bg"><div class="stat-bar" id="bar-attack"></div></div></li>
+                            <li>Defense: <span class="stat-value" id="stat-defense"></span><div class="stat-bar-bg"><div class="stat-bar" id="bar-defense"></div></div></li>
+                            <li>Sp. Atk: <span class="stat-value" id="stat-sp-atk"></span><div class="stat-bar-bg"><div class="stat-bar" id="bar-sp-atk"></div></div></li>
+                            <li>Sp. Def: <span class="stat-value" id="stat-sp-def"></span><div class="stat-bar-bg"><div class="stat-bar" id="bar-sp-def"></div></div></li>
+                            <li>Speed: <span class="stat-value" id="stat-speed"></span><div class="stat-bar-bg"><div class="stat-bar" id="bar-speed"></div></div></li>
+                            <li class="total-stat">Total: <span id="stat-total"></span></li>
+                        </ul>
+                        <p class="type-defenses">Type defenses: <span id="detail-type-defenses"></span></p>
+                    </div>
+                    <!-- Aba "Evolution" (Evolução) -->
+                    <div id="evolution-tab" class="tab-pane">
+                        <p>Conteúdo da Evolução aqui.</p>
+                    </div>
+                    <!-- Aba "Moves" (Movimentos) -->
+                    <div id="moves-tab" class="tab-pane">
+                        <p>Conteúdo dos Movimentos aqui.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- FIM DA NOVA SEÇÃO -->
+
     <script src="/assets/js/pokemon-model.js"></script>
     <script src="/assets/js/pokeAPI.js"></script>
     <script src="/assets/js/engine.js"></script>
