@@ -16,6 +16,13 @@
         
         <h1>Pokedex</h1>
 
+        <!-- Nova seção de busca -->
+        <div class="search-container">
+            <input type="text" id="pokemonSearchInput" placeholder="Buscar Pokémon por nome ou ID...">
+            <button id="searchButton" type="button">Buscar</button>
+            <button id="clearSearchButton" type="button" class="hidden">Limpar Busca</button>
+        </div>
+
         <ol id = "pokemonList" class="pokemons">
 
             <!-- pokemons here -->
@@ -84,20 +91,23 @@
                             <li>Speed: <span class="stat-value" id="stat-speed"></span><div class="stat-bar-bg"><div class="stat-bar" id="bar-speed"></div></div></li>
                             <li class="total-stat">Total: <span id="stat-total"></span></li>
                         </ul>
-                        <p class="type-defenses">Type defenses: <span id="detail-type-defenses"></span></p>
+                        <p class="type-defenses">Type defenses:</p>
+                        <!-- Conteúdo das defesas de tipo será injetado aqui -->
+                        <ul id="type-defenses-list" class="type-defenses-list"></ul>
                     </div>
                     <!-- Aba "Evolution" (Evolução) -->
                     <div id="evolution-tab" class="tab-pane">
-                        <p>Conteúdo da Evolução aqui.</p>
+                        <!-- Conteúdo da Evolução será injetado aqui pelo JavaScript -->
+                        <div id="evolution-chain-content" class="evolution-chain-container"></div>
                     </div>
                     <!-- Aba "Moves" (Movimentos) -->
                     <div id="moves-tab" class="tab-pane">
-                        <p>Conteúdo dos Movimentos aqui.</p>
+                        <!-- Conteúdo dos Movimentos será injetado aqui pelo JavaScript -->
+                        <ul id="moves-list-content" class="moves-list-container"></ul>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+
     <!-- FIM DA NOVA SEÇÃO -->
 
     <script src="/assets/js/pokemon-model.js"></script>

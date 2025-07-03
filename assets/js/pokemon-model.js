@@ -1,4 +1,3 @@
-// Define a classe Pokemon com propriedades para detalhes expandidos
 class Pokemon {
     number; // Número do Pokémon
     name;   // Nome do Pokémon
@@ -19,7 +18,8 @@ class Pokemon {
     totalStat;  // Soma total das estatísticas base
 
     evolutionChainUrl; // URL da cadeia de evolução (será usada para buscar detalhes da evolução)
-    evolutionChain = []; // Estrutura da cadeia de evolução (nome, imagem, etc.)
 
     moves = []; // Array de movimentos do Pokémon
+
+    typeDefenses = {}; // Objeto para armazenar as defesas de tipo
 }
