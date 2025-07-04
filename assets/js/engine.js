@@ -42,10 +42,6 @@ const pokemonSearchInput = document.getElementById('pokemonSearchInput');
 const searchButton = document.getElementById('searchButton');
 const clearSearchButton = document.getElementById('clearSearchButton');
 
-// Elementos para Lore
-// REMOVIDOS: const generateLoreButton = document.getElementById('generateLoreButton');
-// REMOVIDOS: const generatedLoreText = document.getElementById('generatedLoreText');
-
 let currentDisplayedPokemon = null; // Variável global para armazenar o Pokémon atualmente exibido
 
 const limit = 32;
@@ -106,6 +102,7 @@ function loadPokemonItems(offset, limit, searchTerm = '') {
 
         // Adiciona event listeners aos novos cards de Pokémon
         addPokemonCardClickListeners();
+        animatePokemonCards(); // Chama a função de animação para os cards
 
         if (!searchTerm && (offset + limit) < maxRecords) {
             loadMoreButton.classList.remove('hidden'); // Mostra o botão se não estiver em busca e houver mais registros
@@ -154,11 +151,10 @@ async function displayPokemonDetails(pokemon) {
 
         if (statValueElement) statValueElement.textContent = stat.base_stat;
         if (statBarElement) {
-            // Calcula a porcentagem para a barra de progresso (ex: max 255 para stats)
-            const percentage = (stat.base_stat / 255) * 100; 
-            statBarElement.style.width = `${percentage}%`;
-            // Define a cor da barra de progresso com base no tipo principal do Pokémon
+            // Define a variável CSS para a animação da barra de stats
+            statBarElement.style.setProperty('--stat-percentage', `${(stat.base_stat / 255) * 100}%`);
             statBarElement.style.backgroundColor = `var(--${pokemon.type}-color)`; // Usar variável CSS
+            animateStatBars(pokemon.stats); // Chama a animação das barras de stats
         }
     });
     statTotal.textContent = pokemon.totalStat;
@@ -191,8 +187,6 @@ async function displayPokemonDetails(pokemon) {
     // O conteúdo será carregado dinamicamente quando a aba for ativada
     if (evolutionChainContent) evolutionChainContent.innerHTML = '';
     if (movesListContent) movesListContent.innerHTML = '';
-    // REMOVIDOS: generatedLoreText.classList.add('hidden'); // Esconde a lore ao abrir um novo Pokémon
-    // REMOVIDOS: generatedLoreText.textContent = ''; // Limpa o texto da lore
 
     // Esconde a lista principal e mostra a tela de detalhes
     document.querySelector('.container').classList.add('hidden');
@@ -203,6 +197,8 @@ async function displayPokemonDetails(pokemon) {
     tabPanes.forEach(pane => pane.classList.remove('active'));
     document.querySelector('.tab-button[data-tab="about"]').classList.add('active');
     document.getElementById('about-tab').classList.add('active');
+
+    showPokemonDetails(pokemon); // Chama a função de animação para a tela de detalhes
 }
 
 // Adiciona event listeners aos cards de Pokémon para abrir os detalhes
@@ -222,7 +218,7 @@ function handlePokemonCardClick(event) {
             })
             .catch(error => {
                 console.error('Erro ao buscar detalhes do Pokémon:', error);
-                // Opcional: mostrar uma mensagem de erro para o usuário
+                showErrorAnimation(pokemonList, 'Erro ao buscar detalhes do Pokémon.'); // Exibe erro
             });
     }
 }
@@ -239,14 +235,15 @@ tabButtons.forEach(button => {
         // Adiciona a classe 'active' ao botão clicado e ao painel correspondente
         button.classList.add('active');
         document.getElementById(`${targetTab}-tab`).classList.add('active');
+        animateTabChange(`${targetTab}-tab`); // Chama a animação de troca de abas
 
         // Popula o conteúdo baseado na aba ativa
         if (targetTab === 'evolution') {
             if (currentDisplayedPokemon && currentDisplayedPokemon.evolutionChainUrl) {
-                evolutionChainContent.innerHTML = '<p class="loading-message">Carregando cadeia de evolução...</p>'; // Indicador de carregamento
+                const loadingInterval = showLoadingAnimation(evolutionChainContent); // Mostra loading
                 pokeAPI.getEvolutionChain(currentDisplayedPokemon.evolutionChainUrl)
                     .then(chain => {
-                        evolutionChainContent.innerHTML = ''; // Limpa a mensagem de carregamento
+                        hideLoadingAnimation(evolutionChainContent, loadingInterval); // Esconde loading
                         if (chain.length > 0) {
                             const evolutionHtml = chain.map((evo, index) => `
                                 <div class="evolution-step">
@@ -257,13 +254,15 @@ tabButtons.forEach(button => {
                                 ${index < chain.length - 1 ? '<span class="evolution-arrow">→</span>' : ''}
                             `).join('');
                             evolutionChainContent.innerHTML = `<div class="evolution-chain-display">${evolutionHtml}</div>`;
+                            animateEvolution(); // Anima a evolução
                         } else {
                             evolutionChainContent.innerHTML = '<p class="no-data-message">Não há dados de evolução disponíveis.</p>';
                         }
                     })
                     .catch(error => {
                         console.error('Erro ao carregar cadeia de evolução:', error);
-                        evolutionChainContent.innerHTML = '<p class="error-message">Erro ao carregar cadeia de evolução.</p>';
+                        hideLoadingAnimation(evolutionChainContent, loadingInterval); // Esconde loading
+                        showErrorAnimation(evolutionChainContent, 'Erro ao carregar cadeia de evolução.'); // Exibe erro
                     });
             } else {
                 evolutionChainContent.innerHTML = '<p class="no-data-message">Nenhuma cadeia de evolução disponível.</p>';
@@ -276,6 +275,7 @@ tabButtons.forEach(button => {
                     </li>
                 `).join('');
                 movesListContent.innerHTML = `<ul class="moves-list-grid">${movesHtml}</ul>`;
+                animateMovements(); // Anima os movimentos
             } else {
                 movesListContent.innerHTML = '<p class="no-data-message">Nenhum movimento disponível.</p>';
             }
@@ -285,14 +285,16 @@ tabButtons.forEach(button => {
 
 // Listener para o botão de voltar na tela de detalhes
 backButton.addEventListener('click', () => {
-    document.querySelector('.container').classList.remove('hidden');
-    pokemonDetailScreen.classList.add('hidden');
-    // REMOVIDOS: generatedLoreText.classList.add('hidden'); // Esconde a lore ao voltar
-    // REMOVIDOS: generatedLoreText.textContent = ''; // Limpa o texto da lore
-    pokemonSearchInput.value = ''; // Limpa o campo de busca
-    isSearching = false; // Reseta o estado de busca
-    clearSearchButton.classList.add('hidden'); // Esconde o botão de limpar busca
-    loadPokemonItems(0, limit); // Recarrega a lista inicial
+    closePokemonDetails(); // Chama a animação de fechamento
+    // Aguarda a animação terminar antes de esconder a tela e recarregar a lista
+    setTimeout(() => {
+        document.querySelector('.container').classList.remove('hidden');
+        pokemonDetailScreen.classList.add('hidden');
+        pokemonSearchInput.value = ''; // Limpa o campo de busca
+        isSearching = false; // Reseta o estado de busca
+        clearSearchButton.classList.add('hidden'); // Esconde o botão de limpar busca
+        loadPokemonItems(0, limit); // Recarrega a lista inicial
+    }, 400); // Tempo da animação de fechamento
 });
 
 // Lógica de busca
@@ -304,10 +306,12 @@ searchButton.addEventListener('click', () => {
         loadPokemonItems(0, limit, searchTerm); // Carrega o Pokémon buscado
         loadMoreButton.classList.add('hidden'); // Esconde o botão "Load More"
         clearSearchButton.classList.remove('hidden'); // Mostra o botão de limpar busca
+        animateSearch(); // Anima a busca
     } else {
         // Se o campo de busca estiver vazio, limpa a busca e recarrega a lista
         isSearching = false;
         clearSearchButton.classList.add('hidden');
+        pokemonList.innerHTML = ''; // Limpa a lista atual
         loadPokemonItems(0, limit);
     }
 });
@@ -326,51 +330,6 @@ clearSearchButton.addEventListener('click', () => {
     loadPokemonItems(0, limit); // Recarrega a lista inicial
 });
 
-
-// REMOVIDA: Lógica para Gerar Lore com Gemini API
-/*
-generateLoreButton.addEventListener('click', async () => {
-    if (!currentDisplayedPokemon) return;
-
-    generateLoreButton.disabled = true;
-    generatedLoreText.classList.remove('hidden');
-    generatedLoreText.textContent = 'Gerando lore...'; // Indicador de carregamento
-
-    try {
-        const types = currentDisplayedPokemon.types.map(t => t).join(' e ');
-        const prompt = `Gere uma descrição de lore curta, criativa e imaginativa (entre 50-70 palavras) para um Pokémon chamado ${currentDisplayedPokemon.name}, que é do tipo ${types}. Foque em suas características únicas e habitat.`;
-
-        let chatHistory = [];
-        chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-        const payload = { contents: chatHistory };
-        const apiKey = ""; // API Key será fornecida pelo ambiente Canvas
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        const result = await response.json();
-
-        if (result.candidates && result.candidates.length > 0 &&
-            result.candidates[0].content && result.candidates[0].content.parts &&
-            result.candidates[0].content.parts.length > 0) {
-            const text = result.candidates[0].content.parts[0].text;
-            generatedLoreText.textContent = text; // Define a lore gerada
-        } else {
-            generatedLoreText.textContent = 'Não foi possível gerar a lore para este Pokémon.';
-        }
-    } catch (err) {
-        console.error("Erro ao gerar lore:", err);
-        generatedLoreText.textContent = 'Erro ao gerar a lore. Tente novamente.';
-    } finally {
-        generateLoreButton.disabled = false;
-    }
-});
-*/
-
 // Carrega os primeiros Pokémon ao iniciar a página
 loadPokemonItems(offset, limit);
 offset += limit; // Atualiza o offset para o próximo conjunto de Pokémon
@@ -387,4 +346,331 @@ loadMoreButton.addEventListener('click', () => {
         loadPokemonItems(offset, limit);
     }
     offset += limit; // Atualiza o offset APÓS a chamada de loadPokemonItems
+});
+
+
+// ==========================================================================
+// FUNÇÕES DE ANIMAÇÃO (MOVIDAS PARA CÁ DO CSS GLOBAL)
+// ==========================================================================
+
+// Função para animar a entrada de cards de Pokémon
+function animatePokemonCards() {
+    const cards = document.querySelectorAll('.pokemon');
+    cards.forEach((card, index) => {
+        // Adiciona delay escalonado para cada card
+        card.style.animationDelay = `${index * 0.1}s`;
+        
+        // Adiciona listener para hover
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+}
+
+// Função para animar a transição da tela de detalhes
+function showPokemonDetails(pokemonData) {
+    const detailScreen = document.querySelector('.pokemon-detail-screen');
+    
+    // Remove classe de fechamento se existir
+    detailScreen.classList.remove('closing');
+    
+    // Mostra a tela
+    detailScreen.classList.remove('hidden');
+    
+    // Anima as barras de stats
+    setTimeout(() => {
+        animateStatBars(pokemonData.stats);
+    }, 800);
+    
+    // Anima a imagem do Pokémon
+    const pokemonImage = document.querySelector('.pokemon-detail-image');
+    pokemonImage.style.animation = 'pokemonImageBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+}
+
+// Função para fechar a tela de detalhes com animação
+function closePokemonDetails() {
+    const detailScreen = document.querySelector('.pokemon-detail-screen');
+    
+    // Adiciona classe de fechamento
+    detailScreen.classList.add('closing');
+    
+    // Esconde após a animação
+    setTimeout(() => {
+        detailScreen.classList.add('hidden');
+        detailScreen.classList.remove('closing');
+    }, 400);
+}
+
+// Função para animar as barras de stats
+function animateStatBars(stats) {
+    const statBars = document.querySelectorAll('.stat-bar');
+    
+    statBars.forEach((bar, index) => {
+        const statValue = stats[index]?.base_stat || 0;
+        const percentage = Math.min((statValue / 255) * 100, 100); // 255 é o máximo teórico
+        
+        // Define a variável CSS para a animação
+        bar.style.setProperty('--stat-percentage', `${percentage}%`);
+        
+        // Adiciona delay escalonado
+        bar.style.animationDelay = `${index * 0.2}s`;
+        
+        // Força o recálculo da animação
+        bar.style.width = '0%';
+        setTimeout(() => {
+            bar.style.width = `${percentage}%`;
+        }, 50 + (index * 200));
+    });
+}
+
+// Função para animar a troca de abas
+function animateTabChange(activeTabId) {
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    const activePane = document.getElementById(activeTabId);
+    
+    // Esconde todas as abas
+    tabPanes.forEach(pane => {
+        pane.classList.remove('active');
+    });
+    
+    // Mostra a aba ativa com animação
+    setTimeout(() => {
+        activePane.classList.add('active');
+    }, 50);
+}
+
+// Função para animar elementos quando entram na viewport
+function animateOnScroll() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = 'fadeInUp 0.6s ease-out';
+                entry.target.style.opacity = '1';
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+    
+    // Observa os cards de Pokémon
+    const cards = document.querySelectorAll('.pokemon');
+    cards.forEach(card => {
+        observer.observe(card);
+    });
+}
+
+// Função para adicionar efeito ripple aos botões
+function addRippleEffect(button) {
+    button.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+        ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+        ripple.classList.add('ripple');
+        
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+            ripple.remove();
+        }, 400);
+    });
+}
+
+// Função para animar o carregamento de novos Pokémon
+function animateNewPokemon() {
+    const newCards = document.querySelectorAll('.pokemon:not(.animated)');
+    
+    newCards.forEach((card, index) => {
+        card.classList.add('animated');
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.add('new-pokemon');
+        
+        // Remove a classe após a animação
+        setTimeout(() => {
+            card.classList.remove('new-pokemon');
+        }, 600);
+    });
+}
+
+// Função para animar a busca
+function animateSearch() {
+    const searchInput = document.getElementById('pokemonSearchInput');
+    const searchResults = document.querySelector('.pokemons');
+    
+    // Adiciona efeito de loading
+    searchResults.style.opacity = '0.5';
+    searchResults.style.transform = 'translateY(10px)';
+    
+    // Simula delay de busca
+    setTimeout(() => {
+        searchResults.style.opacity = '1';
+        searchResults.style.transform = 'translateY(0)';
+    }, 300);
+}
+
+// Função para animar movimentos
+function animateMovements() {
+    const moveItems = document.querySelectorAll('.move-item');
+    
+    moveItems.forEach((item, index) => {
+        item.style.animationDelay = `${index * 0.05}s`;
+        
+        // Adiciona hover effect
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px) scale(1.05)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+}
+
+// Função para animar evolução
+function animateEvolution() {
+    const evolutionSteps = document.querySelectorAll('.evolution-step');
+    
+    evolutionSteps.forEach((step, index) => {
+        step.style.animationDelay = `${index * 0.3}s`;
+        
+        // Adiciona click effect
+        step.addEventListener('click', function() {
+            this.style.animation = 'evolutionStepAppear 0.6s ease-out';
+        });
+    });
+}
+
+// Função para smooth scroll
+function smoothScroll(target) {
+    const element = document.querySelector(target);
+    if (element) {
+        element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+}
+
+// Função para animar o loading
+function showLoadingAnimation(element) {
+    element.innerHTML = '<div class="loading-message">Carregando...</div>';
+    
+    // Adiciona pontos animados
+    const dots = element.querySelector('.loading-message');
+    let dotCount = 0;
+    
+    const interval = setInterval(() => {
+        dotCount = (dotCount + 1) % 4;
+        dots.textContent = 'Carregando' + '.'.repeat(dotCount);
+    }, 500);
+    
+    return interval;
+}
+
+// Função para parar o loading
+function hideLoadingAnimation(element, interval) {
+    if (interval) {
+        clearInterval(interval);
+    }
+    element.innerHTML = '';
+}
+
+// Função para animar entrada de erro
+function showErrorAnimation(element, message) {
+    element.innerHTML = `<div class="error-message">${message}</div>`;
+    
+    const errorElement = element.querySelector('.error-message');
+    errorElement.style.animation = 'errorShake 0.5s ease-in-out';
+}
+
+// Função para animar números (contador)
+function animateCounter(element, start, end, duration) {
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        const current = Math.floor(start + (end - start) * progress);
+        element.textContent = current;
+        
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        }
+    }
+    
+    requestAnimationFrame(update);
+}
+
+// Função para adicionar efeito parallax
+function addParallaxEffect() {
+    const pokeball = document.querySelector('.headerpokeball');
+    
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const rate = scrolled * -0.5;
+        
+        if (pokeball) {
+            pokeball.style.transform = `translateY(${rate}px) rotate(${scrolled * 0.1}deg)`;
+        }
+    });
+}
+
+// Função para inicializar todas as animações
+function initializeAnimations() {
+    // Anima cards na entrada
+    animatePokemonCards();
+    
+    // Adiciona observer para scroll
+    animateOnScroll();
+    
+    // Adiciona efeito ripple nos botões
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+        addRippleEffect(button);
+    });
+    
+    // Anima busca
+    // animateSearch(); // Esta animação é acionada no evento de clique/enter da busca
+    
+    // Adiciona parallax
+    addParallaxEffect();
+    
+    // Adiciona listeners para abas (a animação é chamada no listener principal)
+    
+    console.log('Animações inicializadas!');
+}
+
+// Função para otimizar performance
+function optimizeAnimations() {
+    // Reduz animações em dispositivos com pouca bateria
+    if (navigator.getBattery) {
+        navigator.getBattery().then(battery => {
+            if (battery.level < 0.2) {
+                document.body.classList.add('low-battery');
+            }
+        });
+    }
+    
+    // Pausa animações quando a aba não está visível
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            document.body.style.animationPlayState = 'paused';
+        } else {
+            document.body.style.animationPlayState = 'running';
+        }
+    });
+}
+
+// Inicializa as animações quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+    initializeAnimations();
+    optimizeAnimations();
 });

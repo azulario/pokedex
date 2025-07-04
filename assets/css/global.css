@@ -1,5 +1,7 @@
 /* Importa a folha de estilo de reset (que inclui a fonte Roboto e box-sizing) */
 @import url('reset.css');
+/* Importa o arquivo de animações */
+@import url('animations.css');
 
 /* Variáveis CSS para as cores dos tipos de Pokémon */
 :root {
@@ -38,15 +40,15 @@ body {
     padding: 1rem;          /* Espaçamento interno */
     margin: 0.5rem auto;    /* Margem superior/inferior e centralização horizontal */
     position: relative;     /* Essencial para posicionar a pokebola do header */
-    /* overflow: hidden; Opcional: para cortar a parte da pokebola que sai do container */
+    overflow: hidden; 
 }
 
 .container h1 {
     text-align: start; /* Centraliza o título */
     font-size: 2rem; /* Tamanho da fonte do título */
-    color: #333; /* Cor do texto do título */
+    color: #3d3d3d; /* Cor do texto do título */
+    margin-left: 2rem;
 }
-
 
 /* Estilos para a seção de busca */
 .search-container {
@@ -231,8 +233,8 @@ h1, .pokemons {
 /* Estilos para esconder/mostrar a tela de detalhes */
 .hidden {
     display: none !important; /* Garante que a tela esteja completamente escondida */
+    margin: .5rem auto;
 }
-
 
 /* Estilos para a tela de detalhes principal (overlay) */
 .pokemon-detail-screen {
@@ -240,18 +242,18 @@ h1, .pokemons {
     top: 50%; /* Centraliza verticalmente */
     left: 50%; /* Centraliza horizontalmente */
     transform: translate(-50%, -50%); /* Ajusta para centralização exata */
-    width: 90vw; /* Largura responsiva */
-    height: 100vh; /* Altura responsiva */
-    min-height: 915px;
+    width: 100%; /* Largura responsiva */
+    height: 100vh; /* Altura ajusta ao conteúdo */
+    min-height: 100vh;
     z-index: 1000; 
-    /* Esconde qualquer conteúdo que vaze das bordas arredondadas */
     display: flex;
     flex-direction: column; /* Organiza os filhos em coluna */
     align-items: center; /* Centraliza os filhos horizontalmente */
     justify-content: flex-start; /* Alinha os filhos ao topo */
-    overflow: hidden; 
-    
-
+    overflow-y: auto; /* Adiciona rolagem vertical se o conteúdo exceder a altura */
+    border-radius: 1rem; /* Cantos arredondados */
+    overflow-x: hidden;
+    background-color: #ffffff;
 }
 
 .headerPokeballImage img {
@@ -267,7 +269,6 @@ h1, .pokemons {
 /* Estilos para o cabeçalho da tela de detalhes */
 .detail-header {
     width: 100%;
-    /* Removido max-width, pois o pai (.pokemon-detail-screen) já o limita */
     display: flex;
     flex-direction: column; /* Altera para coluna para nome e número ficarem abaixo da seta */
     align-items: flex-start; /* Alinha itens à esquerda */
@@ -276,7 +277,6 @@ h1, .pokemons {
     color: #ffffff; /* Cor do texto branco */
     position: relative; /* Para posicionar o nome, número e botão de voltar */
     z-index: 1; /* Fica abaixo da imagem do Pokémon, mas acima do fundo */
-    /* background-color será definido via JS na .pokemon-detail-screen */
     border-radius: 1rem;
 }
 
@@ -325,16 +325,12 @@ h1, .pokemons {
 /* Estilos para a área principal de conteúdo (abas) */
 .detail-main {
     background-color: #ffffff; /* Fundo branco para a área das abas */
-    border-top-left-radius: 1rem; /* Cantos superiores arredondados */
-    border-top-right-radius: 1rem; /* Cantos superiores arredondados */
-    border-bottom-left-radius: 1rem; /* Cantos inferiores arredondados */
-    border-bottom-right-radius: 1rem; /* Cantos inferiores arredondados */
     padding: 1.5rem;
     width: 100%;
-    max-height: 585px ;
     /* Removido max-width, pois o pai (.pokemon-detail-screen) já o limita */
     margin-top: -80px; /* Ajuste para puxar para cima e sobrepor a imagem/header */
-    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.267); /* Sombra suave */
+    border-radius: 1rem 1rem 0 0;
+    box-shadow: 0 -8px 16px rgba(0, 0, 0, 0.1);
     z-index: 2; /* Fica abaixo da imagem do Pokémon e do cabeçalho */
     display: flex;
     flex-direction: column;
@@ -672,15 +668,17 @@ h1, .pokemons {
     .pokemons {
         grid-template-columns: 1fr 1fr 1fr; /* Três colunas para a lista de Pokémon */
         max-width: 700px;
+
     }
 
     .pokemon-detail-screen {
         max-width: 700px; /* Define largura máxima para a tela de detalhes */
+        max-height: 580px;
     }
 
     .pokemon-detail-image {
         max-width: 300px; /* Aumenta o tamanho da imagem do Pokémon */
-        top: 166px; /* Ajusta a posição da imagem do Pokémon */
+        top: 160px; /* Ajusta a posição da imagem do Pokémon */
     }
 
     .headerPokeballImage img {
@@ -691,9 +689,10 @@ h1, .pokemons {
         top: 150px; /* Ajusta a posição da pokebola */
     }
 
+
     .evolution-step img {
-        width: 100px; /* Aumenta o tamanho da imagem da evolução */
-        height: 100px;
+        width: 90px; /* Aumenta o tamanho da imagem da evolução */
+        height: auto;
     }
 
     .evolution-arrow {
@@ -703,4 +702,57 @@ h1, .pokemons {
     .moves-list-container, .moves-list-grid {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Ajusta colunas para movimentos */
     }
+}
+
+@media screen and (min-width: 992px) {
+    .container {
+        max-width: 800px; /* Define largura máxima para o container principal */
+        align-self: center; /* Centraliza o container na tela */
+    }
+    .pokemons {
+        grid-template-columns: 1fr 1fr 1fr 1fr; /* Três colunas para a lista de Pokémon */
+        max-width: 760px;
+
+    }
+
+    .pokemon-detail-screen {
+        max-width: 700px; /* Define largura máxima para a tela de detalhes */
+        max-height: 580px;
+    }
+
+    .detail-main {
+        max-height: 220px;
+        border-radius: 1rem 1rem 0 0;
+        box-shadow: 0 -8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .pokemon-detail-image {
+        max-width: 300px; /* Aumenta o tamanho da imagem do Pokémon */
+        top: 110px; /* Ajusta a posição da imagem do Pokémon */
+    }
+
+    .headerPokeballImage img {
+        width: 300px; /* Largura da imagem da pokebola */
+        height: auto; /* Mantém a proporção da imagem */
+        position: absolute; /* Posiciona a pokebola no cabeçalho */
+        z-index: 2;
+        top: 150px; /* Ajusta a posição da pokebola */
+    }
+
+
+    .evolution-step img {
+        width: 100px; /* Aumenta o tamanho da imagem da evolução */
+        height: 100px;
+    }
+
+    .evolution-arrow {
+        font-size: 1.8rem; /* Aumenta o tamanho da seta */
+    }
+
+
+    .moves-list-container, .moves-list-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Ajusta colunas para movimentos */
+    }
+    
+    
 }
