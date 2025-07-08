@@ -38,7 +38,7 @@ body {
     background-color: #ffffff; /* Fundo branco para o container */
     border-radius: 1rem;    /* Cantos arredondados */
     padding: 1rem;          /* Espaçamento interno */
-    margin: 0.5rem auto;    /* Margem superior/inferior e centralização horizontal */
+    margin: 0.5rem auto;    /* `Margem superior/inferior e centralização horizontal */
     position: relative;     /* Essencial para posicionar a pokebola do header */
     overflow: hidden; 
 }
