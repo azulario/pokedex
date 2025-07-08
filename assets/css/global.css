@@ -623,21 +623,27 @@ h1, .pokemons {
 /* RESPONSIVIDADE */
 /* ========================================================================== */
 
-@media screen and (min-width: 320px) {
+@media screen and (min-width: 280px) {
     .pokemons {
         grid-template-columns: 1fr; /* Uma coluna para a lista de Pokémon */
     }
+
+    .pokemon-detail-screen {
+        max-width: 100%; /* Largura máxima para a tela de detalhes */
+        max-height: 90vh; 
+        overflow-y: auto; /* Adiciona rolagem vertical se necessário */
+    }
     
     .pokemon-detail-image {
-        max-width: 200px; /* Reduz o tamanho da imagem do Pokémon */
+        max-width: 190px; /* Reduz o tamanho da imagem do Pokémon */
         height: auto;
-        top: 210px;
+        top: 194px;
     }
     .headerPokeballImage img {
         position: absolute;
         width: 190px; /* Reduz o tamanho da imagem da pokebola */
         height: auto;
-        top: 200px; /* Ajusta a posição da pokebola */
+        top: 204px; /* Ajusta a posição da pokebola */
     }
     .detail-header .pokemon-detail-name {
         font-size: 1.5rem; /* Reduz o tamanho do nome do Pokémon */
@@ -676,7 +682,6 @@ h1, .pokemons {
     }
 }
 
-/* Estilos para telas com largura mínima de 768px */
 @media screen and (min-width: 720px) {
     .container {
         max-width: 600px; /* Define largura máxima para o container principal */
