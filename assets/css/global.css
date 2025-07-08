@@ -626,10 +626,6 @@ h1, .pokemons {
     .pokemons {
         grid-template-columns: 1fr; /* Uma coluna para a lista de Pokémon */
     }
-
-    .pokemon-detail-screen {       
-        overflow-y: visible;
-    }
     
     .pokemon-detail-image {
         max-width: 200px; /* Reduz o tamanho da imagem do Pokémon */
@@ -670,6 +666,12 @@ h1, .pokemons {
 
     .moves-list-container, .moves-list-grid {
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Ajusta colunas para movimentos */
+    }
+}
+
+@media screen and (min-width: 420px) {
+    .pokemons {
+        grid-template-columns: 1fr 1fr; /* Duas colunas para a lista de Pokémon */
     }
 }
 
