@@ -244,7 +244,7 @@ h1, .pokemons {
     left: 50%; /* Centraliza horizontalmente */
     transform: translate(-50%, -50%); /* Ajusta para centralização exata */
     width: 100%; /* Largura responsiva */
-    height: 100vh; /* Altura ajusta ao conteúdo */
+    height: 94vh; /* Altura ajusta ao conteúdo */
     min-height: 90vh;
     z-index: 1000; 
     display: flex;
@@ -269,6 +269,7 @@ h1, .pokemons {
 
 /* Estilos para o cabeçalho da tela de detalhes */
 .detail-header {
+    margin: top;
     width: 100%;
     display: flex;
     flex-direction: column; /* Altera para coluna para nome e número ficarem abaixo da seta */
