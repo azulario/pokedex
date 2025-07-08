@@ -677,7 +677,7 @@ h1, .pokemons {
 }
 
 /* Estilos para telas com largura mínima de 768px */
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 720px) {
     .container {
         max-width: 600px; /* Define largura máxima para o container principal */
         align-self: center; /* Centraliza o container na tela */
@@ -695,7 +695,7 @@ h1, .pokemons {
 
     .pokemon-detail-image {
         max-width: 280px; /* Aumenta o tamanho da imagem do Pokémon */
-        top: 100px; /* Ajusta a posição da imagem do Pokémon */
+        top: 128px; /* Ajusta a posição da imagem do Pokémon */
     }
 
     .headerPokeballImage img {
@@ -703,8 +703,8 @@ h1, .pokemons {
         height: auto; /* Mantém a proporção da imagem */
         position: absolute; /* Posiciona a pokebola no cabeçalho */
         z-index: 2;
-        top: 120px; /* Ajusta a posição da pokebola */
-    }
+        top: 132px; /* Ajusta a posição da pokebola */
+    }   
 
 
     .evolution-step img {
