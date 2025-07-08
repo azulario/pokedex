@@ -631,13 +631,13 @@ h1, .pokemons {
     .pokemon-detail-image {
         max-width: 200px; /* Reduz o tamanho da imagem do Pokémon */
         height: auto;
-        top: 240px;
+        top: 210px;
     }
     .headerPokeballImage img {
         position: absolute;
-        width: 200px; /* Reduz o tamanho da imagem da pokebola */
+        width: 190px; /* Reduz o tamanho da imagem da pokebola */
         height: auto;
-        top: 240px; /* Ajusta a posição da pokebola */
+        top: 200px; /* Ajusta a posição da pokebola */
     }
     .detail-header .pokemon-detail-name {
         font-size: 1.5rem; /* Reduz o tamanho do nome do Pokémon */
