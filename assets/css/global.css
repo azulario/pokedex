@@ -620,9 +620,20 @@ h1, .pokemons {
 /* RESPONSIVIDADE */
 /* ========================================================================== */
 
-@media screen and (max-width: 375px) {
+@media screen and (min-width: 320px) {
     .pokemons {
         grid-template-columns: 1fr; /* Uma coluna para a lista de Pokémon */
+    }
+
+    .pokemon-detail-screen {
+        height: auto;
+        min-height: 100vh; /* Garante que a tela de detalhes ocupe pelo menos 100% da altura da viewport */
+        overflow-y: visible;
+    }
+    
+    .detail-main {
+        overflow-y: visible; /* Permite rolagem vertical na área principal */
+        height: auto;
     }
     
     .pokemon-detail-image {
@@ -643,6 +654,13 @@ h1, .pokemons {
     .detail-header .pokemon-detail-number {
         font-size: 1.2rem; /* Reduz o tamanho do número do Pokémon */
         top: 4.4rem;
+    }
+
+    .evolution-chain-container{
+        flex-direction: column; /* Alinha a cadeia de evolução em coluna */
+        align-items: center; /* Centraliza os itens horizontalmente */
+        gap: 0.5rem; /* Espaçamento entre os elementos */
+        padding: 0.5rem; /* Adiciona um pouco de padding */
     }
     
     .evolution-step img {
@@ -721,9 +739,9 @@ h1, .pokemons {
     }
 
     .detail-main {
-        max-height: 220px;
         border-radius: 1rem 1rem 0 0;
         box-shadow: 0 -8px 16px rgba(0, 0, 0, 0.1);
+        overflow-y: auto; /* Permite rolagem vertical na área principal */
     }
 
     .pokemon-detail-image {
