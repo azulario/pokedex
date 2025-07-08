@@ -729,7 +729,6 @@ h1, .pokemons {
     .pokemons {
         grid-template-columns: 1fr 1fr 1fr 1fr; /* Três colunas para a lista de Pokémon */
         max-width: 760px;
-
     }
 
     .pokemon-detail-screen {
@@ -744,15 +743,10 @@ h1, .pokemons {
     }
 
     .pokemon-detail-image {
-        max-width: 300px; /* Aumenta o tamanho da imagem do Pokémon */
-        top: 100px; /* Ajusta a posição da imagem do Pokémon */
+        top: 140px; /* Ajusta a posição da imagem do Pokémon */
     }
 
     .headerPokeballImage img {
-        width: 300px; /* Largura da imagem da pokebola */
-        height: auto; /* Mantém a proporção da imagem */
-        position: absolute; /* Posiciona a pokebola no cabeçalho */
-        z-index: 2;
         top: 160px; /* Ajusta a posição da pokebola */
     }
 
@@ -771,5 +765,43 @@ h1, .pokemons {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Ajusta colunas para movimentos */
     }
     
+    
+}
+
+@media screen and (min-width: 1200px) {
+    .container {
+        max-width: 992px; /* Define largura máxima para o container principal */
+        align-self: center; /* Centraliza o container na tela */
+    }
+    .pokemons {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Quatro colunas para a lista de Pokémon */
+        max-width: 900px;
+    }
+
+    .pokemon-detail-screen {
+        max-width: 992px; /* Define largura máxima para a tela de detalhes */
+        max-height: 580px;
+    }
+
+    .pokemon-detail-image {
+        top: 180px; /* Ajusta a posição da imagem do Pokémon */
+    }
+
+    .headerPokeballImage img {
+        top: 180px; /* Ajusta a posição da pokebola */
+    }
+
+    .evolution-step img {
+        width: 120px; /* Aumenta o tamanho da imagem da evolução */
+        height: 120px;
+    }
+
+    .evolution-arrow {
+        font-size: 2rem; /* Aumenta o tamanho da seta */
+    }
+
+    .moves-list-container, .moves-list-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Ajusta colunas para movimentos */
+    }
     
 }
