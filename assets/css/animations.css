@@ -364,8 +364,8 @@
 .pokemon-detail-screen::before {
     content: '';
     position: fixed;
-    width: 100vw;
-    height: 100vh;
+    width: auto;
+    height: auto;
     background: rgba(0, 0, 0, 0.5);
     z-index: -1;
     animation: overlayFadeIn 0.3s ease-out;
